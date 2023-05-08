@@ -1,0 +1,29 @@
+#add sudoer
+sudo usermod -aG sudo tringuyen
+sudo nano /etc/sudoers
+tringuyen  ALL=(ALL) NOPASSWD:ALL
+
+#list partition
+sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT
+
+#Disable swap
+swapoff -a                 # Disable all devices marked as swap in /etc/fstab
+sed -e '/swap/ s/^#*/#/' -i /etc/fstab   # Comment the correct mounting point
+systemctl mask swap.target               # Completely disabled
+
+#echo and tee command
+echo "<?php phpinfo(); ?>" | sudo tee /var/www/test.php > /dev/null && sudo chgrp www-data /var/www/test.php
+
+#PREVENT CHANGES FOR A PACKAGE
+       hold
+           hold is used to mark a package as held back, which will prevent the package from being
+           automatically installed, upgraded or removed
+apt-mark hold kubelet kubeadm kubectl
+
+
+## Add some settings to sysctl
+sudo tee /etc/sysctl.d/kubernetes.conf<<EOF
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOF
