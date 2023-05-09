@@ -30,3 +30,13 @@ EOF
 
 #Get current user
 sudo echo $USER
+
+
+#Special, User/Owner, Group, and Others in that order, when working with the four-number chmods, with that first number being special bits that can be set.
+
+chmod 4555 equates to the following:
+
+Set UID bit - Run the file as the owner regardless of which user is running it
+User/Owner: Read, Execute
+Group: Read, Execute
+Others: Read, Execute
