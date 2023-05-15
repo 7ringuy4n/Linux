@@ -96,3 +96,9 @@ chmod 600 .ssh/authorized_keys
 If a user is no longer needed, you can remove that user so that it can no longer be used.
 Use the userdel command to remove the user from the system. When you specify the -r parameter, the user's home directory and mail spool are deleted. To keep the user's home directory and mail spool, omit the -r parameter.
 sudo userdel -r olduser
+
+
+#Note
+echo hello >/dev/null 2>&1 có ý nghĩa là
+>/dev/null: redirect tất cả các standard output sang /dev/null . Tương đương cách viết 1>/dev/null
+2>&1: redirect tất cả các standard error sang standard output. Nhưng thời điểm này standard output đang trỏ tới /dev/null nên standard error sẽ redirect tới /dev/null
