@@ -2,6 +2,11 @@
 sudo usermod -aG sudo tringuyen
 sudo nano /etc/sudoers
 tringuyen  ALL=(ALL) NOPASSWD:ALL
+tringuyen ALL=(ALL:ALL) NOPASSWD:ALL
+
+#check user group
+groups <username>
+
 
 #list partition
 sudo lsblk -o NAME,FSTYPE,SIZE,MOUNTPOINT
@@ -102,3 +107,209 @@ sudo userdel -r olduser
 echo hello >/dev/null 2>&1 có ý nghĩa là
 >/dev/null: redirect tất cả các standard output sang /dev/null . Tương đương cách viết 1>/dev/null
 2>&1: redirect tất cả các standard error sang standard output. Nhưng thời điểm này standard output đang trỏ tới /dev/null nên standard error sẽ redirect tới /dev/null
+
+
+**************************************************************************** CÁC LỆNH VỀ SYSTEM
+Command	Description
+uname -a	Hiển thị thông tin về hệ thống Linux
+uname -r	Hiển thị thông tin về kernel
+cat /etc/os-release	Hiển thị thông tin hệ điều hành như tên và phiên bản
+uptime	Hiển thị thời gian hệ thống đã chạy
+hostname	Hiển thị tên máy chủ
+hostname -I	Hiển thị tất cả các địa chỉ IP trên local
+last reboot	Hiển thị lịch sử reboot
+date	Hiển thị ngày giờ hiện tại
+cal	Hiển thị lịch tháng hiện tại
+whoami	Hiển thị tên đăng nhập hiện tại của bạn
+history	Hiển thị danh sách tất cả các lệnh đã sử dụng
+clear	Xóa terminal
+shutdown -h now	Tắt hệ thống
+reboot	Khởi động lại hệ thống
+
+**************************************************************************** CÁC LỆNH VỀ HARDWARE
+Command	Description
+cat /proc/cpuinfo	Hiển thị thông tin CPU
+cat /proc/meminfo	Hiển thị thông tin memory
+free -h	Hiển thị bộ nhớ còn trống và đã sử dụng [ -h (human), -m (MB), -g (GB) ]
+lspci -tv	Hiển thị các thiết bị PCI
+lsusb -tv	Hiển thị các thiết bị USB
+lsblk	Hiển thị thông tin về block devices
+dmidecode	Hiển thị DMI / SMBIOS (thông tin phần cứng) từ BIOS
+hdparm -i /dev/sda	Hiển thị thông tin về đĩa sda
+hdparm -tT /dev/sda	Thực hiện kiểm tra tốc độ đọc trên đĩa sda
+badblocks -s /dev/sda	Kiểm tra các khối không đọc được trên đĩa sda
+
+**************************************************************************** CÁC LỆNH VỀ MONITORING
+Command	Description
+mpstat 1	Hiển thị thống kê liên quan đến bộ xử lý
+vmstat 1	Hiển thị thống kê bộ nhớ ảo
+iostat 1	Hiển thị thống kê I/O
+tail -100 /var/log/messages	Hiển thị 100 log gần nhất của hệ thống
+tcpdump -i eth0	Capture và hiển thị tất cả các packets trên interface eth0
+tcpdump -i eth0 'port 80'	Monitor tất cả lưu lượng truy cập trên port 80 ( HTTP )
+lsof	Liệt kê tất cả các tệp đang mở trên hệ thống
+lsof -u user	Liệt kê các tệp được mở bởi người dùng
+watch df -h	Thực thi và "watch" câu lệnh df -h
+
+**************************************************************************** CÁC LỆNH VỀ USER
+Command	Description
+id	Hiển thị id người dùng và nhóm hiện tại của người dùng
+last	Hiển thị người dùng gần nhất đã đăng nhập vào hệ thống
+who	Hiển thị ai đã đăng nhập vào hệ thống
+w	Hiển thị ai đã đăng nhập và họ đang làm gì
+groupadd test	Tạo một nhóm có tên là "test"
+groupdel test	Xóa một nhóm có tên là "test"
+useradd -c "This is NhaX" -m nhax	Tạo tài khoản có tên nhax, với comment "This is NhaX" và tạo thư mục chính cho người dùng
+userdel nhax	Xóa tài khoản nhax
+usermod -aG sales nhax	Thêm tài khoản nhax vào nhóm sales
+usermod [option] username	Thay đổi thông tin tài khoản người dùng bao gồm: nhóm, thư mục chính, shell, ngày hết hạn
+
+**************************************************************************** CÁC LỆNH VỀ FILE, DIRECTORY
+Command	Description
+pwd	Hiển thị folder làm việc hiện tại
+cd	Thay đổi folder hiện tại thành folder chính
+cd foldername	Thay đổi folder thành folder có tên "foldername"
+cd ..	Thay đổi folder lên một cấp
+ls	Liệt kê tất cả các file và folder trong folder hiện tại
+ls -al	Liệt kê tất cả các file và folder bao gồm: tệp ẩn và các thông tin khác như quyền, kích thước và chủ sở hữu
+mkdir directory	Tạo folder tên "directory"
+rm file	Xóa file
+rm -r directory	Xóa folder và nội dung của nó theo cách đệ quy
+rm -f file	Buộc xóa file mà không cần xác nhận
+rm -rf directory	Buộc xóa folder theo cách đệ quy
+cp file1 file2	Copy file1 sang file2
+cp -r source_directory destination	Sao chép folder source_directory đến folder destination. Nếu source_directory tồn tại, sao chép source_directory vào destination, nếu không thì tạo destination với nội dung của source_directory.
+mv file1 file2	Đổi tên hoặc di chuyển file1 thành file2
+ln -s /path/to/file linkname	Tạo symbolic link đến linkname
+touch file	Tạo một file trống (hoặc cập nhật thời gian truy cập và sửa đổi file)
+cat file	Xem nội dung của file
+cat file1 file2 > file3	Kết hợp hai file có tên là file1 và file2 và lưu trữ đầu ra trong file3
+less file	Duyệt qua một file
+head file	Hiển thị 10 dòng đầu tiên của file
+tail file	Hiển thị 10 dòng cuối cùng của file
+tail -f file	Hiển thị 10 dòng cuối cùng của file và "watch" file khi tệp thay đổi.
+
+**************************************************************************** CÁC LỆNH VỀ PROCESS
+Command	Description
+ps	Hiển thị các process hiện đang chạy
+pstree	Hiển thị các process trong sơ đồ dạng cây
+ps -ef	Hiển thị tất cả các process hiện đang chạy trên hệ thống.
+ps -ef | grep processname	Hiển thị process có tên "processname"
+top	Hiển thị các top process
+htop	Tương tự top, nhưng trực quan hơn
+kill pid	Kill process có process ID là pid
+killall processname	Kill tất cả các process có tên "processname"
+program &	Chạy program ở background
+bg	Hiển thị các jobs đã dừng hoặc chạy ngầm
+fg	Đưa các background jobs gần nhất lên foreground
+fg n	Đưa jobs n lên foreground
+lsof	Liệt kê tất cả các tệp được mở bằng các process đang chạy
+pidof processname	Lấy PID của bất kỳ process nào
+CÁC LỆNH VỀ FILE PERMISSIONS
+image.png (Execute = 1, Write = 2, Read = 4)
+
+Command	Description
+ls -l filename	Kiểm tra permission hiện tại của file
+chmod 777 filename	Gán quyền đầy đủ (đọc, viết và thực thi) cho mọi người
+chmod -R 777 dirname	Gán quyền đầy đủ cho folder và tất cả các folder con
+chmod -x filename	Xóa quyền thực thi của bất file nào
+chown username filename	Thay đổi quyền sở hữu của một file
+chown user:group filename	Thay đổi chủ sở hữu và quyền sở hữu nhóm của file
+chown -R user:group dirname	Thay đổi chủ sở hữu và quyền sở hữu nhóm của folder và tất cả các folder con
+
+**************************************************************************** CÁC LỆNH VỀ NETWORKING
+Command	Description
+ip a	Hiển thị network interfaces và địa chỉ IP
+ip addr show dev eth0	Hiển thị địa chỉ eth0 và thông tin chi tiết
+ip addr add IP-Address dev eth1	Thêm địa chỉ IP tạm thời vào interface eth1
+ethtool eth0	Truy vấn hoặc kiểm soát cài đặt phần cứng và network driver
+ping host	Gửi ICMP echo request tới host
+whois domain	Hiển thị thông tin whois cho domain
+dig domain	Hiển thị thông tin DNS cho domain
+dig -x IP_ADDRESS	Tra cứu ngược IP_ADDRESS
+host domain	Hiển thị địa chỉ IP DNS cho domain
+hostname -i	Hiển thị địa chỉ mạng của hostname.
+hostname -I	Hiển thị tất cả các địa chỉ IP cục bộ của máy chủ.
+wget http://domain.com/file	Tải xuống http://domain.com/file
+netstat -nutlp	Hiển thị các cổng tcp và udp đang nghe và các chương trình tương ứng
+
+**************************************************************************** CÁC LỆNH VỀ ARCHIVES (TAR FILES)
+Command	Description
+tar -cvf filename.tar filename	Nén file thành Tar
+tar -xvf filename.tar	Giải nén file Tar
+tar -tvf filename.tar	Liệt kê nội dung của file Tar
+tar -xvf filename.tar file1.txt	Gỡ bỏ một file duy nhất khỏi file Tar
+tar -rvf filename.tar file2.txt	Thêm file vào Tar
+zip filename.zip filename	Nén một file thành một file zip
+zip filename.zip file1.txt file2.txt file3.txt	Nén nhiều file vào một zip
+zip -u filename.zip file4.txt	Thêm file vào zip
+zip -d filename.zip file4.txt	Xóa file khỏi zip
+unzip -l filename.zip	Hiển thị nội dung của file lưu trữ zip
+unzip filename.zip	Giải nén
+unzip filename.zip -d /dirname	Giải nén file vào một thư mục cụ thể
+
+**************************************************************************** CÁC LỆNH VỀ INSTALLING PACKAGES
+Command	Description
+apt-get install packagename	Cài đặt gói trên các bản phân phối dựa trên Debian
+apt-get remove packagename	Xóa gói trên các bản phân phối dựa trên Debian
+dpkg -l | grep -i installed	Nhận danh sách tất cả các gói trên bản phân phối dựa trên Debian
+dpkg -i packagename.deb	Cài đặt gói .deb
+apt-get update	Cập nhật kho lưu trữ trên các bản phân phối dựa trên Debian
+apt-get upgrade packagename	Nâng cấp một gói cụ thể trên các bản phân phối dựa trên Debian
+apt-get autoremove	Xóa tất cả các gói không mong muốn trên các bản phân phối dựa trên Debian
+yum install packagename	Cài đặt gói trên các bản phân phối dựa trên RPM
+yum remove packagename	Xóa gói trên các bản phân phối dựa trên RPM
+yum update	Cập nhật tất cả các gói hệ thống lên phiên bản mới nhất trên các bản phân phối dựa trên RPM
+yum list --installed	Liệt kê tất cả các gói đã cài đặt trên các bản phân phối dựa trên RPM
+yum list --available	Liệt kê tất cả các gói có sẵn trên các bản phân phối dựa trên RPM
+
+**************************************************************************** CÁC LỆNH VỀ SEARCH
+Command	Description
+grep pattern file	Tìm kiếm "pattern" trong file
+grep -r pattern directory	Tìm kiếm đệ quy "pattern" trong thư mục
+locate name	Tìm tệp và thư mục theo tên
+find /home/john -name 'prefix*'	Tìm tệp trong /home/john bắt đầu bằng "prefix".
+find /home -size +100M	Tìm tệp lớn hơn 100MB trong /home
+
+**************************************************************************** CÁC LỆNH VỀ SSH LOGINS
+Command	Description
+ssh host	Kết nối với máy chủ dưới dạng tên người dùng cục bộ của bạn
+ssh user@host	Kết nối với máy chủ với tư cách người dùng
+ssh -p port user@host	Kết nối với máy chủ bằng cổng
+
+**************************************************************************** CÁC LỆNH VỀ FILE TRANSFERS
+Command	Description
+scp file.txt server:/tmp	Sao chép an toàn file.txt vào thư mục /tmp trên máy chủ
+scp server:/var/www/*.html /tmp	Sao chép các tệp *.html từ máy chủ vào thư mục /tmp cục bộ.
+scp -r server:/var/www /tmp	Sao chép đệ quy tất cả các tệp và thư mục từ máy chủ vào thư mục /tmp của hệ thống hiện tại.
+rsync -a /home /backups/	Đồng bộ hóa /home với /backups/home
+rsync -avz /home server:/backups/	Đồng bộ hóa các tệp/thư mục giữa hệ thống cục bộ và từ xa với chức năng nén
+
+**************************************************************************** CÁC LỆNH VỀ DISK USAGE
+Command	Description
+df -h	Hiển thị dung lượng trống và đã sử dụng trên mounted filesystems
+df -i	Hiển thị các inode trống và đã sử dụng trên mounted filesystems
+fdisk -l	Hiển thị kích thước và loại phân vùng đĩa
+du -ah	Hiển thị mức sử dụng đĩa cho tất cả các tệp và thư mục ở định dạng con người có thể đọc được
+du -sh	Hiển thị tổng mức sử dụng đĩa ngoài thư mục hiện tại
+
+**************************************************************************** CÁC LỆNH VỀ SECURITY
+Command	Description
+passwd	Thay đổi mật khẩu của người dùng hiện tại.
+sudo -i	Chuyển sang tài khoản root với môi trường của root.
+sudo -s	Thực thi shell hiện tại của bạn với quyền root
+sudo -l	Liệt kê các đặc quyền sudo cho người dùng hiện tại.
+visudo	Chỉnh sửa tệp cấu hình sudoers.
+getenforce	Hiển thị chế độ SELinux hiện tại.
+sestatus	Hiển thị chi tiết SELinux như chế độ SELinux hiện tại, chế độ được định cấu hình và chính sách đã tải.
+setenforce 0	Thay đổi chế độ SELinux hiện tại thành Permissive. (Không tồn tại khi khởi động lại.)
+setenforce 1	Thay đổi chế độ SELinux hiện tại thành Enforcing. (Không tồn tại khi khởi động lại.)
+SELINUX=enforcing	Đặt chế độ SELinux để thực thi khi khởi động bằng cách sử dụng cài đặt này trong tệp /etc/selinux/config.
+SELINUX=permissive	Đặt chế độ SELinux thành cho phép khi khởi động bằng cách sử dụng cài đặt này trong tệp /etc/selinux/config.
+SELINUX=disabled	Đặt chế độ SELinux thành tắt khi khởi động bằng cách sử dụng cài đặt này trong tệp /etc/selinux/config.
+
+**************************************************************************** CÁC LỆNH VỀ LOGGING AND AUDITING
+Command	Description
+dmesg	Hiển thị message trong kernel ring buffer
+journalctl	Hiển thị nhật ký được lưu trữ trong systemd journal.
+journalctl -u servicename	Hiển thị nhật ký cho một đơn vị servicename cụ thể.
