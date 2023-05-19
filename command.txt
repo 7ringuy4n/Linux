@@ -108,6 +108,69 @@ echo hello >/dev/null 2>&1 có ý nghĩa là
 >/dev/null: redirect tất cả các standard output sang /dev/null . Tương đương cách viết 1>/dev/null
 2>&1: redirect tất cả các standard error sang standard output. Nhưng thời điểm này standard output đang trỏ tới /dev/null nên standard error sẽ redirect tới /dev/null
 
+**************************************************************************** Permissions
+1. Cơ sở lý thuyết: SUID - Set owner User ID up on execution
+1.1 - Các quyền với file, thư mục trong Linux
+Có bao giờ bạn install Project mới với Laravel, truy cập ngay và gặp thông báo như thế này (Permision denied):
+Và bằng một cách nào đó, sau khi gõ lệnh: chmod -R 777 storage/ thì trang Welcome của Laravel lại hiện ra một cách ngon lành? Con số 777 kia nghĩa là gì? 
+Con số 7 kia chính là số bit tối đa được sử dụng để đặt quyền của user đối với file, thư mục. Bao gồm: Read (4), Write (2) và Execute (1). Khi đặt 777, nó sẽ là rwxrwxrwx. 
+Hay 755 thì sẽ là: rwxr-xr-x.
+Với lệnh chmod -R 777 storage/ ở trên, mọi thư mục, file...trong /storage/ đều có thể read, write, execute bởi bất cứ ai. 
+Về cơ bản, bạn đã vô hiệu hóa tất cả các hình thức bảo mật với thư mục này 😗 . Khi full quyền, có thể tóm tắt như sau:
+Dấu - hoặc d: Dấu - chỉ ra đó là 1 file, chữ d chỉ ra đó là 1 thư mục
+User: Quyền của user chủ sở hữu của file / thư mục này.
+Group: Quyền của những users cùng group với chủ sở hữu file / thư mục này.
+Other: Quyền của tất cả các user khác trên máy.
+
+Để biết được file và directories đang được phân quyền như thế nào, các bạn gõ ls -la trên terminal.
+Đây là sự kết hợp của ls -l (use a long listing format) và ls -a (do not ignore entries starting with .). 
+Điều này là quan trọng vì trong rất nhiều bài lab, các file ẩn thường chứa những thông tin quan trọng.
+
+1.2 - SUID, SGID và sticky bits
+Như vậy các bạn có thể thấy, chúng ta có 3 quyền với 3 nhóm người dùng khác nhau. 
+Tuy nhiên còn có 3 special permission với file, thư mục trong Linux, đó là SUID, SGID và sticky bits. 
+Đương nhiên trong phạm vi bài viết, chúng ta sẽ tìm hiểu chủ yếu về việc leo thang đặc quyền với SUID. Tuy nhiên mình sẽ giới thiệu cơ bản về cả 2 permission kia.
+
+1.2.1 - SUID
+SUID ( hay Set user ID ) , thường được sử dụng trên các file thực thi ( executable files ). Quyền này cho phép file được thực thi với các đặc quyền (privileges) của chủ sở hữu file đó.
+Ví dụ: nếu một file được sở hữu bởi user root và được set SUID bit, thì bất kể ai thực thi file, nó sẽ luôn chạy với các đặc quyền của user root. Và khi xem permissions của file, ở phần User, nhãn x sẽ được chuyển sang nhãn s.
+
+
+Để gán SUID cho 1 file, có 2 cách:
+chmod u+s [tên file]
+hoặc:
+chmod 4555 [ tên file] ( thêm 4 vào trước permissons )
+Lưu ý: Nếu file chưa có quyền thực thi (executing file as program), SUID sẽ là chữ S. Để nhãn S trở thành s bạn phải cấp quyền thực thi cho file, cũng có 2 cách:
+Chuột phải vào file chọn Properties, phần Permission tick vào Allow executing file as program.
+
+Cách 2 đơn giản hơn, chỉ gần gõ: chmod u+x [tên file]
+Dưới đây là cách gán 1 SUID cho một file cụ thể tên .burp ( dùng grep đơn giản là mình lọc kết quả cho đỡ rối mắt ). Và từ S đã chuyển thành s. Gán SUID hoàn tất.
+
+1.2.2 - SGID
+SGID ( hay Set group ID ) , cũng tương tự như SUID. Quyền này cho phép file được thực thi với các đặc quyền (privileges) của group sở hữu file đó. 
+Ví dụ: nếu một file thuộc sở hữu của Staff group, bất kể ai thực thi file đó, nó sẽ luôn chạy với đặc quyền của Staff group.
+Và khi xem permissions của file, ở phần Group, nhãn x sẽ được chuyển sang nhãn s.
+
+Để gán SGID cho 1 file, có 2 cách:
+chmod g+s [tên file]
+hoặc:
+chmod 2555 [ tên file] ( thêm 2 vào trước permissons )
+
+Ngoài ra SGID có thể được gán cho thư mục. Với cách gán tương tự như gán cho một file. 
+Khi SGID được gán cho 1 thư mục, tất cả các file được tạo ra trong thư mục đó sẽ kế thừa quyền sở hữu của Group đối với thư mục đó.
+
+1.2.2 - Sticky Bit
+Được dùng cho các thư mục chia sẻ , mục đích là ngăn chặn việc người dùng này xóa file của người dùng kia. 
+Chỉ duy nhất owner và root mới có quyền rename hay xóa các file, thư mục khi nó được set Sticky Bit. Đó là lý do nó còn được gọi là restricted deletion bit.
+Điều này khá hữu ích trên các thư mục được set quyền 777 (mọi người đều được phép đọc và ghi / xóa).
+
+Khác một chút với 2 permission phía trên, ở Sticky Bit, nhãn x sẽ được chuyển thành nhãn t.
+Để gán Sticky Bit có 3 cách:
+chmod +t [tên file, thư mục]
+hoặc:
+chmod o+t [tên file, thư mục]
+hoặc:
+chmod 1555 [ tên file,thư mục] ( thêm 1 vào trước permissons )
 
 **************************************************************************** CÁC LỆNH VỀ SYSTEM
 Command	Description
