@@ -376,3 +376,7 @@ Command	Description
 dmesg	Hiển thị message trong kernel ring buffer
 journalctl	Hiển thị nhật ký được lưu trữ trong systemd journal.
 journalctl -u servicename	Hiển thị nhật ký cho một đơn vị servicename cụ thể.
+
+****************************************************************************
+How to output lines 800-900 of a file with a unix command?
+head -n 900 file.txt | tail -n 100
